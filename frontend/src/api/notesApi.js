@@ -9,7 +9,17 @@ export const fetchNotes = async () => {
       const response = await axios.get(`${API_BASE_URL}/api/care-notes`);
       if (response.data.status) {
         const fetchedNotes = response.data.data;
-        await db.notes.bulkPut(fetchedNotes); // Sync new notes to IndexedDB
+
+        // Get unsynced notes from IndexedDB
+        const allNotes = await db.notes.toArray();
+        const unsyncedNotes = allNotes.filter((note) => note.synced === false);
+        console.log('unsyncedNotes', unsyncedNotes);
+
+        // Merge unsynced notes with fetched notes
+        const mergedNotes = [...unsyncedNotes, ...fetchedNotes];
+
+        await db.notes.bulkPut(mergedNotes); // Sync notes to IndexedDB
+
         return await db.notes.orderBy('dateTime').reverse().limit(5).toArray(); // Fetch the latest 5 notes
       } else {
         console.error('Error fetching notes', response.data.errors);

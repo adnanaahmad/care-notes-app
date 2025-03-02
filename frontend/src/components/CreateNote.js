@@ -21,6 +21,8 @@ function CreateNote() {
       setResidentName("");
       setAuthorName("");
       dispatch(closeModal());
+    } else {
+      console.error('Failed to create note');
     }
   };
 

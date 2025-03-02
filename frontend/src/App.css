@@ -29,6 +29,7 @@ h1 {
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-bottom: 20px;
 }
 
 .add-note-button:hover {
@@ -116,4 +117,21 @@ h1 {
   .add-note-button {
     width: 100%;
   }
+}
+
+.status {
+  margin-left: 10px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.8em;
+}
+
+.online {
+  background-color: #c3ffc3; /* Light green background for online */
+  color: #008000; /* Dark green text */
+}
+
+.offline {
+  background-color: #ffdddd; /* Light red background for offline */
+  color: #8b0000; /* Dark red text */
 } 

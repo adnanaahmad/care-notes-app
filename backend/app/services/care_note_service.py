@@ -1,4 +1,3 @@
-import datetime
 from typing import List
 from app.models.models import CareNote, CareNoteRequest
 from app.config.mock_db import mock_db as db

@@ -1,52 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
 import CreateNote from './components/CreateNote';
 import NotesList from './components/NotesList';
 import './App.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { openModal, closeModal } from './features/notesSlice';
 
 function App() {
-  const [notes, setNotes] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    async function fetchNotes() {
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/api/care-notes`);
-        if (response.data.status) {
-          setNotes(response.data.data);
-        } else {
-          console.error('Error fetching notes', response.data.errors);
-        }
-      } catch (err) {
-        console.error('Error fetching notes', err);
-      }
-    }
-    fetchNotes();
-  }, []);
-
-  const handleAddNote = (note) => {
-    setNotes([...notes, note]);
-    setIsModalOpen(false);
-  };
+  const dispatch = useDispatch();
+  const isModalOpen = useSelector(state => state.notes.isModalOpen);
 
   return (
     <div className="App">
       <div className="main-container">
         <div className="header">
           <h1>Care Notes</h1>
-          <button className="add-note-button" onClick={() => setIsModalOpen(true)}>
+          <button className="add-note-button" onClick={() => dispatch(openModal())}>
             + Add Note
           </button>
         </div>
         {isModalOpen && (
           <div className="modal-overlay">
             <div className="modal-content">
-              <button className="close-button" onClick={() => setIsModalOpen(false)}>×</button>
-              <CreateNote onAddNote={handleAddNote} />
+              <button className="close-button" onClick={() => dispatch(closeModal())}>×</button>
+              <CreateNote />
             </div>
           </div>
         )}
-        <NotesList notes={notes} />
+        <NotesList />
       </div>
     </div>
   );

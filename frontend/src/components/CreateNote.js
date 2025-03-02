@@ -1,26 +1,26 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { addNote, closeModal } from '../features/notesSlice';
+import { postCareNote } from '../api/notesApi';
+import db from '../db/indexedDb';
 import './CreateNote.css';
 
-function CreateNote({ onAddNote }) {
+function CreateNote() {
+  const dispatch = useDispatch();
   const [content, setContent] = useState("");
   const [residentName, setResidentName] = useState("");
   const [authorName, setAuthorName] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_BASE_URL}/api/care-notes`, { content, residentName, authorName });
-      if (response.data.status) {
-        onAddNote(response.data.data);
-        setContent("");
-        setResidentName("");
-        setAuthorName("");
-      } else {
-        console.error('Error adding note:', response.data.errors);
-      }
-    } catch (error) {
-      console.error('Error adding note:', error);
+    const result = await postCareNote(content, residentName, authorName);
+    if (result.success) {
+      await db.notes.put(result.data); // Add note to Dexie DB
+      dispatch(addNote(result.data)); // Update Redux state
+      setContent("");
+      setResidentName("");
+      setAuthorName("");
+      dispatch(closeModal());
     }
   };
 

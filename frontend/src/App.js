@@ -1,46 +1,53 @@
 import React, { useState, useEffect } from 'react';
-import Note from './components/Note';
+import axios from 'axios';
+import CreateNote from './components/CreateNote';
+import NotesList from './components/NotesList';
+import './App.css';
 
 function App() {
   const [notes, setNotes] = useState([]);
-  const [newNote, setNewNote] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    fetch('/care-notes')
-      .then(res => res.json())
-      .then(data => setNotes(data));
+    async function fetchNotes() {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/api/care-notes`);
+        if (response.data.status) {
+          setNotes(response.data.data);
+        } else {
+          console.error('Error fetching notes', response.data.errors);
+        }
+      } catch (err) {
+        console.error('Error fetching notes', err);
+      }
+    }
+    fetchNotes();
   }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    fetch('/care-notes', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content: newNote })
-    })
-    .then(res => res.json())
-    .then(data => {
-      setNotes([...notes, data]);
-      setNewNote('');
-    });
+  const handleAddNote = (note) => {
+    setNotes([...notes, note]);
+    setIsModalOpen(false);
   };
 
   return (
     <div className="App">
-      <h1>Care Notes</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          value={newNote}
-          onChange={(e) => setNewNote(e.target.value)}
-          placeholder="New care note"
-        />
-        <button type="submit">Add</button>
-      </form>
-      <ul>
-        {notes.map((note, index) => (
-          <Note key={index} note={note} />
-        ))}
-      </ul>
+      <div className="main-container">
+        <div className="header">
+          <h1>Care Notes</h1>
+          <button className="add-note-button" onClick={() => setIsModalOpen(true)}>
+            + Add Note
+          </button>
+        </div>
+        {isModalOpen && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <button className="close-button" onClick={() => setIsModalOpen(false)}>×</button>
+              <CreateNote onAddNote={handleAddNote} />
+            </div>
+          </div>
+        )}
+        <NotesList notes={notes} />
+      </div>
     </div>
   );
 }

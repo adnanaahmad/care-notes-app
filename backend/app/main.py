@@ -1,9 +1,18 @@
 from .config.standard_response import StandardResponse
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from .services.care_note_service import CareNoteService
 from .models.models import CareNoteRequest
 
 app = FastAPI()
+# Configure CORS to allow requests from the frontend (localhost:3000)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Allowed origin
+    allow_credentials=True,                  # Allow cookies
+    allow_methods=["*"],                     # Allow all HTTP methods
+    allow_headers=["*"],                     # Allow all headers
+)
 
 @app.get("/api/care-notes")
 def get_care_notes():

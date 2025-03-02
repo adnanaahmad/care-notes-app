@@ -2,11 +2,11 @@
 1. Clone the repository:
    ```bash
    git clone https://github.com/adnanaahmad/care-notes-app.git
-   cd logistics-microservice
+   cd care-notes-app
    ```
 
 2. Set up environment variables:
-   - `.env` file is already added to the root directory for backend API keys and configurations.
+   - `.env` file is already added to the root directory for configurations.
 
 3. Build and run the containers:
    ```bash

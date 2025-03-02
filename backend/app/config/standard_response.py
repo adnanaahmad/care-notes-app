@@ -4,6 +4,9 @@ from pydantic import BaseModel
 T = TypeVar("T")
 
 class StandardResponse(BaseModel, Generic[T]):
+    """
+    Standard response model for API requests.
+    """
     status: bool = True
     message: str = "Success"
     data: Optional[T] = None

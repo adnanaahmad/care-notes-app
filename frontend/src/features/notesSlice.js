@@ -1,33 +1,39 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const notesSlice = createSlice({
-  name: 'notes',
+  name: 'notes', // name of the slice
   initialState: {
-    notes: [],
-    isModalOpen: false,
-
-    isOnline: navigator.onLine, // Add isOnline to the initial state
+    notes: [], // array to hold notes
+    isModalOpen: false, // boolean to control modal visibility
+    isOnline: navigator.onLine, // boolean to track online status, defaults to browser online status
   },
   reducers: {
     setNotes: (state, action) => {
-      state.notes = action.payload;
+      // Reducer to set the notes array
+      state.notes = action.payload; // payload should be an array of notes
     },
     addNote: (state, action) => {
-      state.notes.unshift(action.payload);
+      // Reducer to add a new note to the beginning of the notes array
+      state.notes.unshift(action.payload); // payload should be the new note object
       if (state.notes.length > 5) {
-        state.notes.pop();
+        // Keep only the 5 most recent notes
+        state.notes.pop(); // remove the oldest note if there are more than 5
       }
     },
     openModal: (state) => {
+      // Reducer to open the modal
       state.isModalOpen = true;
     },
     closeModal: (state) => {
+      // Reducer to close the modal
       state.isModalOpen = false;
     },
-    setOnlineStatusTrue: (state) => { // Reducer to set isOnline to true
+    setOnlineStatusTrue: (state) => {
+      // Reducer to set isOnline to true
       state.isOnline = true;
     },
-    setOnlineStatusFalse: (state) => { // Reducer to set isOnline to false
+    setOnlineStatusFalse: (state) => {
+      // Reducer to set isOnline to false
       state.isOnline = false;
     },
   }
@@ -40,6 +46,6 @@ export const {
   closeModal,
   setOnlineStatusTrue,
   setOnlineStatusFalse,
-} = notesSlice.actions;
+} = notesSlice.actions; // Export actions for use in components
 
-export default notesSlice.reducer;
+export default notesSlice.reducer; // Export reducer to be included in the store

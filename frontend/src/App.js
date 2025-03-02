@@ -4,14 +4,17 @@ import NotesList from './components/NotesList';
 import './App.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal, closeModal, setOnlineStatusTrue, setOnlineStatusFalse } from './features/notesSlice';
-
+import { syncNotesToBackend } from './api/notesApi';
 function App() {
   const dispatch = useDispatch();
   const isModalOpen = useSelector(state => state.notes.isModalOpen);
   const isOnline = useSelector(state => state.notes.isOnline);
 
   useEffect(() => {
-    const setOnline = () => dispatch(setOnlineStatusTrue());
+    const setOnline = () => {
+      dispatch(setOnlineStatusTrue());
+      syncNotesToBackend();
+    };
     const setOffline = () => dispatch(setOnlineStatusFalse());
 
     window.addEventListener('online', setOnline);

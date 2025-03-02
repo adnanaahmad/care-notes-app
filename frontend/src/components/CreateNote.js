@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addNote, closeModal } from '../features/notesSlice';
 import { postCareNote } from '../api/notesApi';
 import db from '../db/indexedDb';
@@ -7,13 +7,15 @@ import './CreateNote.css';
 
 function CreateNote() {
   const dispatch = useDispatch();
+  const isOnline = useSelector(state => state.notes.isOnline);
   const [content, setContent] = useState("");
   const [residentName, setResidentName] = useState("");
   const [authorName, setAuthorName] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await postCareNote(content, residentName, authorName);
+    const dateTime = new Date().toISOString();
+    const result = await postCareNote(content, residentName, authorName, dateTime);
     if (result.success) {
       await db.notes.put(result.data); // Add note to Dexie DB
       dispatch(addNote(result.data)); // Update Redux state
@@ -22,7 +24,14 @@ function CreateNote() {
       setAuthorName("");
       dispatch(closeModal());
     } else {
-      console.error('Failed to create note');
+      if (!isOnline) {
+        await db.notes.put({ content, residentName, authorName, synced: false, dateTime });
+        dispatch(addNote({ content, residentName, authorName, synced: false, dateTime }));
+        dispatch(closeModal());
+        console.error('Failed to sync with server, note saved locally');
+      } else {
+        console.error('Failed to create note');
+      }
     }
   };
 

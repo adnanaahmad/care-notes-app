@@ -12,12 +12,11 @@ class CareNoteService:
     def create_care_note(note_request: CareNoteRequest) -> CareNote:
         # Generate a new ID (last note's ID + 1 or 1 if empty)
         new_id = db[-1].id + 1 if db else 1
-        dateTime = datetime.datetime.now()
         # Create a new CareNote with the generated ID
         new_note = CareNote(
             id=new_id,
             residentName=note_request.residentName,
-            dateTime=dateTime,
+            dateTime=note_request.dateTime,
             content=note_request.content,
             authorName=note_request.authorName
         )

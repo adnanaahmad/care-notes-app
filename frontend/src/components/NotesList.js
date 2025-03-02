@@ -15,7 +15,7 @@ const NotesList = () => {
     };
 
     initFetch();
-    const interval = setInterval(initFetch, 5000); // Poll every 60 seconds
+    const interval = setInterval(initFetch, 60000); // Poll every 60 seconds
     return () => clearInterval(interval);
   }, [dispatch]);
 

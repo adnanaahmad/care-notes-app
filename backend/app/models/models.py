@@ -5,10 +5,9 @@ class BaseCareNote(BaseModel):
     residentName: str
     content: str
     authorName: str
+    dateTime: datetime
 
 class CareNote(BaseCareNote):
     id: int
-    dateTime: datetime
-
 class CareNoteRequest(BaseCareNote):
     pass

@@ -34,9 +34,9 @@ export const fetchNotes = async () => {
 };
 
 // Function to post a new care note
-export const postCareNote = async (content, residentName, authorName) => {
+export const postCareNote = async (content, residentName, authorName, dateTime) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/care-notes`, { content, residentName, authorName });
+      const response = await axios.post(`${API_BASE_URL}/api/care-notes`, { content, residentName, authorName, dateTime });
       if (response.data.status) {
         return { success: true, data: response.data.data };
       } else {
@@ -48,3 +48,19 @@ export const postCareNote = async (content, residentName, authorName) => {
       return { success: false, error };
     }
 }; 
+
+export const syncNotesToBackend = async () => {
+  const allNotes = await db.notes.toArray();
+  const unsyncedNotes = allNotes.filter((note) => note.synced === false);
+  console.log("user back online, syncing notes");
+  for (const note of unsyncedNotes) {
+    const result = await postCareNote(note.content, note.residentName, note.authorName, note.dateTime);
+    if (result.success) {
+      db.notes.where('id').equals(note.id).delete();
+      await db.notes.put(result.data);
+    } else{
+      console.error("Error syncing note:", result.error);
+    }
+  }
+  console.log("all notes synced");
+};

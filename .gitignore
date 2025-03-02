@@ -1,0 +1,45 @@
+# Node modules
+node_modules/
+
+# Build output
+build/
+dist/
+
+# # Local environment files
+# .env
+# .env.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea/
+.vscode/
+*.sublime-workspace
+
+# MacOS files
+.DS_Store
+
+# Docker files
+*.pid
+*.log
+
+# Python specific
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+venv.bak/
+*.pyc
+
+# Postman collections
+*.postman_collection.json
+
+# Other
+*.log 
